@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider } from './context/AuthContext';
 import { ShipmentProvider } from './context/ShipmentContext';
+import { CustomerProvider } from './context/CustomerContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
@@ -13,6 +14,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Shipments from './pages/Shipments';
 import ShipmentDetails from './pages/ShipmentDetails';
+import Customers from './pages/Customers';
+import CustomerProfile from './pages/CustomerProfile';
 
 // Layout wrapper to show Navbar only on dashboard or protected pages
 const MainLayout = ({ children }) => {
@@ -33,45 +36,62 @@ function App() {
   return (
     <AuthProvider>
       <ShipmentProvider>
-        <Router>
-          <MainLayout>
-            <Routes>
-              {/* Public Authentication Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
+        <CustomerProvider>
+          <Router>
+            <MainLayout>
+              <Routes>
+                {/* Public Authentication Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
-              {/* Protected Routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/shipments"
-                element={
-                  <ProtectedRoute>
-                    <Shipments />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/shipments/:id"
-                element={
-                  <ProtectedRoute>
-                    <ShipmentDetails />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Protected Routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/shipments"
+                  element={
+                    <ProtectedRoute>
+                      <Shipments />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/shipments/:id"
+                  element={
+                    <ProtectedRoute>
+                      <ShipmentDetails />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/customers"
+                  element={
+                    <ProtectedRoute>
+                      <Customers />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/customers/:id"
+                  element={
+                    <ProtectedRoute>
+                      <CustomerProfile />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Default Redirect */}
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </MainLayout>
+                {/* Default Redirect */}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </MainLayout>
 
           {/* Global Toast Container */}
           <ToastContainer
@@ -87,6 +107,7 @@ function App() {
             theme="colored"
           />
         </Router>
+        </CustomerProvider>
       </ShipmentProvider>
     </AuthProvider>
   );

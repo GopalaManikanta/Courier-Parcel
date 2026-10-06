@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, LayoutDashboard, Package } from 'lucide-react';
+import { LogOut, LayoutDashboard, Package, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -62,6 +62,17 @@ const Navbar = () => {
                 >
                   <Package className="w-3.5 h-3.5" />
                   <span>Shipments</span>
+                </Link>
+                <Link
+                  to="/customers"
+                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                    isActive('/customers')
+                      ? 'bg-[#0B2E8C] text-white shadow-md'
+                      : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span>Customers</span>
                 </Link>
               </div>
               

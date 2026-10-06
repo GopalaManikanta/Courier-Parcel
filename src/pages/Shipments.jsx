@@ -21,8 +21,10 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
+import { useCustomers } from '../context/CustomerContext';
 
 const Shipments = () => {
+  const { allCustomers } = useCustomers();
   const {
     shipments,
     allShipments,
@@ -79,14 +81,47 @@ const Shipments = () => {
   const liveDeliveredCount = allShipments.filter((s) => s.deliveryStatus === 'Delivered').length;
   const livePendingCount = allShipments.filter((s) => s.deliveryStatus === 'Pending').length;
 
+  // Auto-fill pickup address when API sender customer selected
+  const handleSenderChange = (val) => {
+    const matched = allCustomers.find((c) => c.customerName === val);
+    setCreateFormData((prev) => ({
+      ...prev,
+      senderName: val,
+      pickupAddress: matched
+        ? `${matched.address}, ${matched.city} - ${matched.postalCode}`
+        : prev.pickupAddress
+    }));
+  };
+
+  // Auto-fill delivery address when API receiver customer selected
+  const handleReceiverChange = (val) => {
+    const matched = allCustomers.find((c) => c.customerName === val);
+    setCreateFormData((prev) => ({
+      ...prev,
+      receiverName: val,
+      deliveryAddress: matched
+        ? `${matched.address}, ${matched.city} - ${matched.postalCode}`
+        : prev.deliveryAddress
+    }));
+  };
+
   // Handle Open Create Modal
   const handleOpenCreateModal = () => {
+    const defaultSender = allCustomers[0]?.customerName || '';
+    const defaultReceiver = allCustomers[1]?.customerName || '';
+    const defaultPickup = allCustomers[0]
+      ? `${allCustomers[0].address}, ${allCustomers[0].city} - ${allCustomers[0].postalCode}`
+      : '';
+    const defaultDelivery = allCustomers[1]
+      ? `${allCustomers[1].address}, ${allCustomers[1].city} - ${allCustomers[1].postalCode}`
+      : '';
+
     setCreateFormData({
       trackingNumber: generateTrackingNumber(),
-      senderName: '',
-      receiverName: '',
-      pickupAddress: '',
-      deliveryAddress: '',
+      senderName: defaultSender,
+      receiverName: defaultReceiver,
+      pickupAddress: defaultPickup,
+      deliveryAddress: defaultDelivery,
       parcelWeight: '2.5 kg',
       parcelType: 'Express Parcel',
       shippingDate: new Date().toISOString().split('T')[0],
@@ -551,28 +586,61 @@ const Shipments = () => {
               {/* Sender & Receiver Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Sender Name *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Sender Name (API Customer) *</label>
+                  <select
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-[#0B2E8C] mb-1.5 font-bold text-slate-800"
+                    value={createFormData.senderName}
+                    onChange={(e) => handleSenderChange(e.target.value)}
+                  >
+                    <option value="">-- Select API Sender Customer --</option>
+                    {allCustomers.map((c) => (
+                      <option key={c.id} value={c.customerName}>
+                        {c.customerName} ({c.city})
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Ramesh Kumar"
+                    placeholder="Or enter custom sender name"
                     value={createFormData.senderName}
-                    onChange={(e) => setCreateFormData({ ...createFormData, senderName: e.target.value })}
+                    onChange={(e) => handleSenderChange(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Receiver Name *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Receiver Name (API Customer) *</label>
+                  <select
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 focus:ring-2 focus:ring-[#0B2E8C] mb-1.5 font-bold text-slate-800"
+                    value={createFormData.receiverName}
+                    onChange={(e) => handleReceiverChange(e.target.value)}
+                  >
+                    <option value="">-- Select API Receiver Customer --</option>
+                    {allCustomers.map((c) => (
+                      <option key={c.id} value={c.customerName}>
+                        {c.customerName} ({c.city})
+                      </option>
+                    ))}
+                  </select>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Priya Sharma"
+                    placeholder="Or enter custom receiver name"
                     value={createFormData.receiverName}
-                    onChange={(e) => setCreateFormData({ ...createFormData, receiverName: e.target.value })}
+                    onChange={(e) => handleReceiverChange(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"
                   />
                 </div>
               </div>
+
+              {/* API Customers Datalist */}
+              <datalist id="shipment-customer-api-names">
+                {allCustomers.map((c) => (
+                  <option key={c.id} value={c.customerName}>
+                    {c.email} - {c.city}
+                  </option>
+                ))}
+              </datalist>
 
               {/* Pickup Address */}
               <div>
@@ -694,6 +762,7 @@ const Shipments = () => {
                   <input
                     type="text"
                     required
+                    list="shipment-customer-api-names"
                     value={editFormData.senderName || ''}
                     onChange={(e) => setEditFormData({ ...editFormData, senderName: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"
@@ -704,6 +773,7 @@ const Shipments = () => {
                   <input
                     type="text"
                     required
+                    list="shipment-customer-api-names"
                     value={editFormData.receiverName || ''}
                     onChange={(e) => setEditFormData({ ...editFormData, receiverName: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"

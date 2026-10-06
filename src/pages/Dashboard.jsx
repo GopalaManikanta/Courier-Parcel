@@ -21,12 +21,14 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useShipments } from '../context/ShipmentContext';
+import { useCustomers } from '../context/CustomerContext';
 import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { allShipments, addShipment, generateTrackingNumber } = useShipments();
+  const { allCustomers } = useCustomers();
 
   // Quick Track Input state
   const [trackQuery, setTrackQuery] = useState('');
@@ -227,10 +229,10 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Customers</p>
-                <h4 className="text-2xl font-black text-slate-900">418</h4>
+                <h4 className="text-2xl font-black text-slate-900">{allCustomers.length || 10}</h4>
               </div>
             </div>
-            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">Active</span>
+            <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">Active API</span>
           </div>
 
           {/* 6. Today's Shipments */}
@@ -460,38 +462,38 @@ const Dashboard = () => {
 
               {/* Activity List */}
               <div className="mt-4 space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0">
-                    <Truck className="w-4 h-4" />
+                {allShipments.slice(0, 3).map((shipment, index) => (
+                  <div key={shipment.id || index} className="flex items-start gap-3">
+                    <div
+                      className={`w-8 h-8 rounded-full text-white flex items-center justify-center shrink-0 ${
+                        index === 0
+                          ? 'bg-blue-600'
+                          : index === 1
+                          ? 'bg-emerald-500'
+                          : 'bg-amber-500'
+                      }`}
+                    >
+                      {index === 0 ? (
+                        <Truck className="w-4 h-4" />
+                      ) : index === 1 ? (
+                        <CheckCircle2 className="w-4 h-4" />
+                      ) : (
+                        <Package className="w-4 h-4" />
+                      )}
+                    </div>
+                    <div className="flex-1 space-y-0.5">
+                      <p className="text-xs font-bold text-slate-900">
+                        Parcel {shipment.trackingNumber} ({shipment.deliveryStatus})
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {shipment.senderName} ➔ {shipment.receiverName}
+                      </p>
+                      <span className="text-[10px] font-semibold text-slate-400 block pt-0.5">
+                        {index === 0 ? '10 mins ago' : index === 1 ? '45 mins ago' : '2 hours ago'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-bold text-slate-900">Parcel GT-984201 status updated</p>
-                    <p className="text-[11px] text-slate-500">En route from Hyderabad to Bangalore Hub</p>
-                    <span className="text-[10px] font-semibold text-slate-400 block pt-0.5">10 mins ago</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-bold text-slate-900">Shipment GT-884102 delivered</p>
-                    <p className="text-[11px] text-slate-500">Delivered to Sneha Reddy in Mumbai</p>
-                    <span className="text-[10px] font-semibold text-slate-400 block pt-0.5">45 mins ago</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0">
-                    <Package className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 space-y-0.5">
-                    <p className="text-xs font-bold text-slate-900">New Shipment Booked (GT-772190)</p>
-                    <p className="text-[11px] text-slate-500">Document parcel booked by Ananya Verma</p>
-                    <span className="text-[10px] font-semibold text-slate-400 block pt-0.5">2 hours ago</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -557,7 +559,8 @@ const Dashboard = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Ramesh Kumar"
+                    list="dashboard-customer-api-names"
+                    placeholder="e.g. Leanne Graham"
                     value={createFormData.senderName}
                     onChange={(e) => setCreateFormData({ ...createFormData, senderName: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"
@@ -568,13 +571,23 @@ const Dashboard = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Priya Sharma"
+                    list="dashboard-customer-api-names"
+                    placeholder="e.g. Ervin Howell"
                     value={createFormData.receiverName}
                     onChange={(e) => setCreateFormData({ ...createFormData, receiverName: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0B2E8C]"
                   />
                 </div>
               </div>
+
+              {/* API Customers Datalist */}
+              <datalist id="dashboard-customer-api-names">
+                {allCustomers.map((c) => (
+                  <option key={c.id} value={c.customerName}>
+                    {c.email} - {c.city}
+                  </option>
+                ))}
+              </datalist>
 
               {/* Pickup Address */}
               <div>
