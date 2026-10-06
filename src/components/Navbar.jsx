@@ -1,15 +1,23 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { LogOut, LayoutDashboard, Package } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const isActive = (path) => {
+    if (path === '/dashboard') {
+      return location.pathname === '/dashboard';
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -26,10 +34,36 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* User Navigation & Logout */}
+        {/* User Navigation Links & Logout */}
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
+              
+              {/* Dynamic Route Active Navigation Links */}
+              <div className="flex items-center gap-2 mr-2">
+                <Link
+                  to="/dashboard"
+                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                    isActive('/dashboard')
+                      ? 'bg-[#0B2E8C] text-white shadow-md'
+                      : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  <span>Dashboard</span>
+                </Link>
+                <Link
+                  to="/shipments"
+                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                    isActive('/shipments')
+                      ? 'bg-[#0B2E8C] text-white shadow-md'
+                      : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  <Package className="w-3.5 h-3.5" />
+                  <span>Shipments</span>
+                </Link>
+              </div>
               
               {/* User Role Tag */}
               <div className="flex items-center gap-2.5 bg-slate-100 px-3.5 py-1.5 rounded-full border border-slate-200 text-slate-800 text-xs font-semibold">
@@ -45,7 +79,7 @@ const Navbar = () => {
               {/* Logout Button */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#0B2E8C] hover:bg-[#082269] rounded-full shadow transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-[#0B2E8C] bg-white hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-slate-200 rounded-full transition-all cursor-pointer"
                 title="Logout Account"
               >
                 <LogOut className="w-3.5 h-3.5" />

@@ -4,12 +4,15 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider } from './context/AuthContext';
+import { ShipmentProvider } from './context/ShipmentContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
+import Shipments from './pages/Shipments';
+import ShipmentDetails from './pages/ShipmentDetails';
 
 // Layout wrapper to show Navbar only on dashboard or protected pages
 const MainLayout = ({ children }) => {
@@ -29,44 +32,62 @@ const MainLayout = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <MainLayout>
-          <Routes>
-            {/* Public Authentication Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+      <ShipmentProvider>
+        <Router>
+          <MainLayout>
+            <Routes>
+              {/* Public Authentication Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Protected Route */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shipments"
+                element={
+                  <ProtectedRoute>
+                    <Shipments />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shipments/:id"
+                element={
+                  <ProtectedRoute>
+                    <ShipmentDetails />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Default Redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </MainLayout>
+              {/* Default Redirect */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </MainLayout>
 
-        {/* Global Toast Container */}
-        <ToastContainer
-          position="top-right"
-          autoClose={3500}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-      </Router>
+          {/* Global Toast Container */}
+          <ToastContainer
+            position="top-right"
+            autoClose={3500}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </Router>
+      </ShipmentProvider>
     </AuthProvider>
   );
 }
