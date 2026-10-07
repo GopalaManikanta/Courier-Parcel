@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, LayoutDashboard, Package, Users } from 'lucide-react';
+import { LogOut, LayoutDashboard, Package, Users, Radio } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -43,7 +43,7 @@ const Navbar = () => {
               <div className="flex items-center gap-2 mr-2">
                 <Link
                   to="/dashboard"
-                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
                     isActive('/dashboard')
                       ? 'bg-[#0B2E8C] text-white shadow-md'
                       : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
@@ -53,8 +53,19 @@ const Navbar = () => {
                   <span>Dashboard</span>
                 </Link>
                 <Link
+                  to="/tracking"
+                  className={`px-3.5 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                    isActive('/tracking')
+                      ? 'bg-[#0B2E8C] text-white shadow-md'
+                      : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  <Radio className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Tracking</span>
+                </Link>
+                <Link
                   to="/shipments"
-                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
                     isActive('/shipments')
                       ? 'bg-[#0B2E8C] text-white shadow-md'
                       : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'
@@ -65,7 +76,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/customers"
-                  className={`px-4 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 text-xs font-extrabold rounded-full transition-all flex items-center gap-1.5 ${
                     isActive('/customers')
                       ? 'bg-[#0B2E8C] text-white shadow-md'
                       : 'bg-white text-slate-700 hover:text-[#0B2E8C] hover:bg-slate-100 border border-slate-200'

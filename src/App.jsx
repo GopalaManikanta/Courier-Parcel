@@ -16,6 +16,7 @@ import Shipments from './pages/Shipments';
 import ShipmentDetails from './pages/ShipmentDetails';
 import Customers from './pages/Customers';
 import CustomerProfile from './pages/CustomerProfile';
+import ParcelTracking from './pages/ParcelTracking';
 
 // Layout wrapper to show Navbar only on dashboard or protected pages
 const MainLayout = ({ children }) => {
@@ -51,6 +52,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/tracking"
+                  element={
+                    <ProtectedRoute>
+                      <ParcelTracking />
                     </ProtectedRoute>
                   }
                 />
