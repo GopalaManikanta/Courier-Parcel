@@ -22,6 +22,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useShipments } from '../context/ShipmentContext';
 import { useCustomers } from '../context/CustomerContext';
+import StatusBadge from '../components/StatusBadge';
 import { toast } from 'react-toastify';
 
 const Dashboard = () => {
@@ -349,17 +350,20 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="flex gap-1 bg-slate-100 p-1 rounded-lg">
-                {['All', 'In Transit', 'Delivered', 'Pending'].map((st) => (
-                  <button
-                    key={st}
-                    onClick={() => setActiveTabFilter(st)}
-                    className={`flex-1 text-[10px] text-center font-bold py-1.5 rounded-md transition-all cursor-pointer ${
-                      activeTabFilter === st ? 'bg-[#0B2E8C] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    {st}
-                  </button>
-                ))}
+                <select
+                  value={activeTabFilter}
+                  onChange={(e) => setActiveTabFilter(e.target.value)}
+                  className="w-full text-xs font-bold bg-white text-slate-800 px-3 py-1.5 rounded-md border border-slate-200 cursor-pointer focus:ring-2 focus:ring-[#0B2E8C]"
+                >
+                  <option value="All">All Statuses (7 Types)</option>
+                  <option value="Pending">🟡 Pending</option>
+                  <option value="Picked Up">🩵 Picked Up</option>
+                  <option value="In Transit">🔵 In Transit</option>
+                  <option value="Out for Delivery">🟣 Out for Delivery</option>
+                  <option value="Delivered">🟢 Delivered</option>
+                  <option value="Cancelled">⚪ Cancelled</option>
+                  <option value="Failed Delivery">⚠️ Failed Delivery</option>
+                </select>
               </div>
             </div>
 
@@ -419,24 +423,7 @@ const Dashboard = () => {
                           </div>
                         </td>
                         <td className="py-3.5 px-3">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                              shipment.deliveryStatus === 'Delivered'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : shipment.deliveryStatus === 'In Transit'
-                                ? 'bg-blue-100 text-blue-800'
-                                : shipment.deliveryStatus === 'Out for Delivery'
-                                ? 'bg-indigo-100 text-indigo-800'
-                                : shipment.deliveryStatus === 'Cancelled'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-amber-100 text-amber-800'
-                            }`}
-                          >
-                            {shipment.deliveryStatus === 'Delivered' && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
-                            {shipment.deliveryStatus === 'In Transit' && <Truck className="w-3 h-3 text-blue-600" />}
-                            {shipment.deliveryStatus === 'Pending' && <Clock className="w-3 h-3 text-amber-600" />}
-                            {shipment.deliveryStatus}
-                          </span>
+                          <StatusBadge status={shipment.deliveryStatus} />
                         </td>
                       </tr>
                     ))}

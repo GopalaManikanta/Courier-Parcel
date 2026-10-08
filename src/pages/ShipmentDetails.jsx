@@ -17,6 +17,7 @@ import {
   Navigation
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
+import StatusBadge from '../components/StatusBadge';
 
 const ShipmentDetails = () => {
   const { id } = useParams();
@@ -162,25 +163,27 @@ const ShipmentDetails = () => {
                 <select
                   value={shipment.deliveryStatus}
                   onChange={(e) => handleStatusChange(e.target.value)}
-                  className="bg-white text-slate-900 font-extrabold text-xs px-3.5 py-1.5 rounded-full border-0 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-md"
+                  className="bg-white text-slate-900 font-extrabold text-xs px-4 py-2 rounded-full border-0 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-md"
                 >
                   <option value="Pending">🟡 Pending</option>
+                  <option value="Picked Up">🩵 Picked Up</option>
                   <option value="In Transit">🔵 In Transit</option>
                   <option value="Out for Delivery">🟣 Out for Delivery</option>
                   <option value="Delivered">🟢 Delivered</option>
-                  <option value="Cancelled">🔴 Cancelled</option>
+                  <option value="Cancelled">⚪ Cancelled</option>
+                  <option value="Failed Delivery">⚠️ Failed Delivery</option>
                 </select>
               </div>
             </div>
 
             <div>
               <p className="text-xs font-bold text-white/80 uppercase tracking-widest">
-                {shipment.deliveryStatus === 'Delivered' ? 'Package Delivered' : 'Estimated Delivery'}
+                {shipment.deliveryStatus === 'Delivered' ? 'Package Delivered' : 'Delivery Status'}
               </p>
               <h1 className="text-2xl sm:text-4xl font-black tracking-tight mt-1">
                 {shipment.deliveryStatus === 'Delivered'
                   ? `Delivered on ${shipment.expectedDeliveryDate}`
-                  : `Arriving by ${shipment.expectedDeliveryDate}`}
+                  : `Status: ${shipment.deliveryStatus}`}
               </h1>
               <p className="text-xs sm:text-sm text-slate-200 mt-2 font-medium">
                 Tracking ID: <span className="font-mono font-bold text-amber-300">{shipment.trackingNumber}</span> • Shipped via <span className="font-bold">gaatiTrack Express Linehaul</span>
@@ -307,30 +310,28 @@ const ShipmentDetails = () => {
               </div>
             </div>
 
-            {/* Tracking Activity Stream */}
+            {/* Status History Audit Trail */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 space-y-5">
               <h3 className="text-base font-black text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-4">
-                <Clock className="w-5 h-5 text-[#0B2E8C]" /> Real-Time Tracking Updates
+                <Clock className="w-5 h-5 text-[#0B2E8C]" /> Delivery Status History & Log
               </h3>
 
               <div className="space-y-6 border-l-2 border-slate-200 pl-4 ml-2">
-                {activityStream.map((act, idx) => (
-                  <div key={idx} className="relative space-y-1">
-                    <div
-                      className={`absolute -left-[23px] top-0.5 w-4 h-4 rounded-full border-2 ${
-                        act.done
-                          ? 'border-emerald-500 bg-emerald-500'
-                          : 'border-slate-300 bg-white'
-                      }`}
-                    ></div>
-                    <div className="flex items-center justify-between">
-                      <h4 className={`text-xs font-black ${act.done ? 'text-slate-900' : 'text-slate-400'}`}>
-                        {act.title}
-                      </h4>
-                      <span className="text-[10px] font-bold text-slate-400">{act.time}</span>
+                {(shipment.statusHistory && shipment.statusHistory.length > 0
+                  ? shipment.statusHistory
+                  : activityStream
+                ).map((hist, idx) => (
+                  <div key={hist.id || idx} className="relative space-y-1.5">
+                    <div className="absolute -left-[23px] top-1 w-4 h-4 rounded-full border-2 border-[#0B2E8C] bg-white"></div>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <StatusBadge status={hist.status} size="small" />
+                      <span className="text-[10px] font-bold text-slate-400">{hist.timestamp || hist.time}</span>
                     </div>
-                    <p className="text-xs font-semibold text-[#0B2E8C]">{act.location}</p>
-                    <p className="text-xs text-slate-500">{act.desc}</p>
+                    <p className="text-xs font-black text-slate-900">{hist.location}</p>
+                    <p className="text-xs text-slate-500 font-medium">{hist.notes || hist.desc}</p>
+                    {hist.updatedBy && (
+                      <span className="text-[10px] text-slate-400 font-semibold block">Updated By: {hist.updatedBy}</span>
+                    )}
                   </div>
                 ))}
               </div>

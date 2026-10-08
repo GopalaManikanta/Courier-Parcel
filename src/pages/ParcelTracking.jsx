@@ -16,6 +16,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
+import StatusBadge from '../components/StatusBadge';
 import { toast } from 'react-toastify';
 
 const ParcelTracking = () => {
@@ -350,10 +351,12 @@ const ParcelTracking = () => {
                     className="w-full bg-white text-slate-900 font-extrabold text-xs px-4 py-2.5 rounded-xl border-0 focus:ring-2 focus:ring-amber-400 cursor-pointer shadow-md"
                   >
                     <option value="Pending">🟡 Pending</option>
+                    <option value="Picked Up">🩵 Picked Up</option>
                     <option value="In Transit">🔵 In Transit</option>
                     <option value="Out for Delivery">🟣 Out for Delivery</option>
                     <option value="Delivered">🟢 Delivered</option>
-                    <option value="Cancelled">🔴 Cancelled</option>
+                    <option value="Cancelled">⚪ Cancelled</option>
+                    <option value="Failed Delivery">⚠️ Failed Delivery</option>
                   </select>
                 </div>
               </div>
@@ -589,10 +592,12 @@ const ParcelTracking = () => {
                         className="bg-slate-100 text-slate-900 font-extrabold text-xs px-3 py-1.5 rounded-full border border-slate-200 cursor-pointer shadow-sm"
                       >
                         <option value="Pending">🟡 Pending</option>
+                        <option value="Picked Up">🩵 Picked Up</option>
                         <option value="In Transit">🔵 In Transit</option>
                         <option value="Out for Delivery">🟣 Out for Delivery</option>
                         <option value="Delivered">🟢 Delivered</option>
-                        <option value="Cancelled">🔴 Cancelled</option>
+                        <option value="Cancelled">⚪ Cancelled</option>
+                        <option value="Failed Delivery">⚠️ Failed Delivery</option>
                       </select>
                     </div>
 

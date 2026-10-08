@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
 import { useCustomers } from '../context/CustomerContext';
+import StatusBadge, { getStatusConfig } from '../components/StatusBadge';
 
 const Shipments = () => {
   const { allCustomers } = useCustomers();
@@ -307,12 +308,14 @@ const Shipments = () => {
                 }}
                 className="block w-full pl-10 pr-3.5 py-2.5 border border-slate-300 rounded-xl text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-[#0B2E8C]"
               >
-                <option value="All">All Delivery Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Out for Delivery">Out for Delivery</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
+                <option value="All">All Delivery Statuses (7 Types)</option>
+                <option value="Pending">🟡 Pending</option>
+                <option value="Picked Up">🩵 Picked Up</option>
+                <option value="In Transit">🔵 In Transit</option>
+                <option value="Out for Delivery">🟣 Out for Delivery</option>
+                <option value="Delivered">🟢 Delivered</option>
+                <option value="Cancelled">⚪ Cancelled</option>
+                <option value="Failed Delivery">⚠️ Failed Delivery</option>
               </select>
             </div>
 
@@ -433,23 +436,17 @@ const Shipments = () => {
                             <select
                               value={shipment.deliveryStatus}
                               onChange={(e) => handleInlineStatusChange(shipment, e.target.value)}
-                              className={`px-2.5 py-1 rounded-full text-[11px] font-bold border-0 focus:ring-2 focus:ring-[#0B2E8C] cursor-pointer ${
-                                shipment.deliveryStatus === 'Delivered'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : shipment.deliveryStatus === 'In Transit'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : shipment.deliveryStatus === 'Out for Delivery'
-                                  ? 'bg-indigo-100 text-indigo-800'
-                                  : shipment.deliveryStatus === 'Cancelled'
-                                  ? 'bg-red-100 text-red-800'
-                                  : 'bg-amber-100 text-amber-800'
+                              className={`px-3 py-1 rounded-full text-[11px] font-extrabold cursor-pointer border shadow-2xs ${
+                                getStatusConfig(shipment.deliveryStatus).badgeClass
                               }`}
                             >
                               <option value="Pending">🟡 Pending</option>
+                              <option value="Picked Up">🩵 Picked Up</option>
                               <option value="In Transit">🔵 In Transit</option>
                               <option value="Out for Delivery">🟣 Out for Delivery</option>
                               <option value="Delivered">🟢 Delivered</option>
-                              <option value="Cancelled">🔴 Cancelled</option>
+                              <option value="Cancelled">⚪ Cancelled</option>
+                              <option value="Failed Delivery">⚠️ Failed Delivery</option>
                             </select>
                           </div>
                         </td>
@@ -704,13 +701,15 @@ const Shipments = () => {
                   <select
                     value={createFormData.deliveryStatus}
                     onChange={(e) => setCreateFormData({ ...createFormData, deliveryStatus: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-bold"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white font-bold text-xs"
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="In Transit">In Transit</option>
-                    <option value="Out for Delivery">Out for Delivery</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="Pending">🟡 Pending</option>
+                    <option value="Picked Up">🩵 Picked Up</option>
+                    <option value="In Transit">🔵 In Transit</option>
+                    <option value="Out for Delivery">🟣 Out for Delivery</option>
+                    <option value="Delivered">🟢 Delivered</option>
+                    <option value="Cancelled">⚪ Cancelled</option>
+                    <option value="Failed Delivery">⚠️ Failed Delivery</option>
                   </select>
                 </div>
               </div>
