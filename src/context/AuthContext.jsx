@@ -6,22 +6,14 @@ const AuthContext = createContext();
 const MOCK_USERS_KEY = 'courier_users';
 const CURRENT_USER_KEY = 'courier_current_user';
 
-// Default initial users if local storage is empty
+// Professional Default Initial Users for Enterprise Admin Portal
 const DEFAULT_USERS = [
   {
     id: 'usr_1',
-    name: 'Demo Admin',
+    name: 'Senior Logistics Administrator',
     email: 'admin@courier.com',
     password: 'password123',
-    role: 'Agent/Admin',
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 'usr_2',
-    name: 'John Doe',
-    email: 'user@courier.com',
-    password: 'password123',
-    role: 'Customer',
+    role: 'Logistics Director',
     createdAt: new Date().toISOString()
   }
 ];
@@ -36,11 +28,28 @@ export const AuthProvider = ({ children }) => {
       const storedUsers = localStorage.getItem(MOCK_USERS_KEY);
       if (!storedUsers) {
         localStorage.setItem(MOCK_USERS_KEY, JSON.stringify(DEFAULT_USERS));
+      } else {
+        // Upgrade legacy 'Demo Admin' references to 'Senior Logistics Administrator'
+        try {
+          const parsed = JSON.parse(storedUsers);
+          const updated = parsed.map((u) =>
+            u.name === 'Demo Admin' ? { ...u, name: 'Senior Logistics Administrator', role: 'Logistics Director' } : u
+          );
+          localStorage.setItem(MOCK_USERS_KEY, JSON.stringify(updated));
+        } catch {
+          // fallback
+        }
       }
 
       const activeUser = localStorage.getItem(CURRENT_USER_KEY);
       if (activeUser) {
-        setUser(JSON.parse(activeUser));
+        const parsedActive = JSON.parse(activeUser);
+        if (parsedActive.name === 'Demo Admin') {
+          parsedActive.name = 'Senior Logistics Administrator';
+          parsedActive.role = 'Logistics Director';
+          localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(parsedActive));
+        }
+        setUser(parsedActive);
       }
     } catch (err) {
       console.error('Failed to parse auth data from LocalStorage:', err);
@@ -74,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       name: userData.name,
       email: userData.email.toLowerCase(),
       password: userData.password,
-      role: userData.role || 'Customer',
+      role: userData.role || 'Logistics Admin',
       createdAt: new Date().toISOString()
     };
 
@@ -99,15 +108,15 @@ export const AuthProvider = ({ children }) => {
     // Save user session without raw password
     const sessionUser = {
       id: foundUser.id,
-      name: foundUser.name,
+      name: foundUser.name === 'Demo Admin' ? 'Senior Logistics Administrator' : foundUser.name,
       email: foundUser.email,
-      role: foundUser.role,
+      role: foundUser.role || 'Logistics Director',
       loggedInAt: new Date().toISOString()
     };
 
     localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(sessionUser));
     setUser(sessionUser);
-    toast.success(`Welcome back, ${foundUser.name}!`);
+    toast.success(`Welcome back, ${sessionUser.name}!`);
     return true;
   };
 

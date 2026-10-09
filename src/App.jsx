@@ -18,8 +18,9 @@ import ShipmentDetails from './pages/ShipmentDetails';
 import Customers from './pages/Customers';
 import CustomerProfile from './pages/CustomerProfile';
 import ParcelTracking from './pages/ParcelTracking';
+import Reports from './pages/Reports';
 
-// Layout wrapper to show Navbar only on dashboard or protected pages
+// Admin Portal Layout Wrapper
 const MainLayout = ({ children }) => {
   const location = useLocation();
   const isAuthPage = ['/login', '/register', '/forgot-password'].includes(location.pathname);
@@ -40,86 +41,94 @@ function App() {
       <NotificationProvider>
         <ShipmentProvider>
           <CustomerProvider>
-          <Router>
-            <MainLayout>
-              <Routes>
-                {/* Public Authentication Routes */}
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Router>
+              <MainLayout>
+                <Routes>
+                  {/* Public Authentication Routes */}
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                {/* Protected Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/tracking"
-                  element={
-                    <ProtectedRoute>
-                      <ParcelTracking />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/shipments"
-                  element={
-                    <ProtectedRoute>
-                      <Shipments />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/shipments/:id"
-                  element={
-                    <ProtectedRoute>
-                      <ShipmentDetails />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/customers"
-                  element={
-                    <ProtectedRoute>
-                      <Customers />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/customers/:id"
-                  element={
-                    <ProtectedRoute>
-                      <CustomerProfile />
-                    </ProtectedRoute>
-                  }
-                />
+                  {/* Protected Admin Routes */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/tracking"
+                    element={
+                      <ProtectedRoute>
+                        <ParcelTracking />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/shipments"
+                    element={
+                      <ProtectedRoute>
+                        <Shipments />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/shipments/:id"
+                    element={
+                      <ProtectedRoute>
+                        <ShipmentDetails />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/customers"
+                    element={
+                      <ProtectedRoute>
+                        <Customers />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/customers/:id"
+                    element={
+                      <ProtectedRoute>
+                        <CustomerProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/reports"
+                    element={
+                      <ProtectedRoute>
+                        <Reports />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Default Redirect */}
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
-              </Routes>
-            </MainLayout>
+                  {/* Default Redirect to Admin Dashboard */}
+                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </MainLayout>
 
-          {/* Global Toast Container */}
-          <ToastContainer
-            position="top-right"
-            autoClose={3500}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-          />
-        </Router>
-        </CustomerProvider>
-      </ShipmentProvider>
+              {/* Global Toast Container */}
+              <ToastContainer
+                position="top-right"
+                autoClose={3500}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+              />
+            </Router>
+          </CustomerProvider>
+        </ShipmentProvider>
       </NotificationProvider>
     </AuthProvider>
   );

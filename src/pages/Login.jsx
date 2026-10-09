@@ -9,7 +9,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [authorityMode, setAuthorityMode] = useState(true);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -36,19 +35,6 @@ const Login = () => {
       setRememberMe(true);
     }
   }, [setValue]);
-
-  const toggleMode = (isAuthority) => {
-    setAuthorityMode(isAuthority);
-    if (isAuthority) {
-      setValue('email', 'admin@courier.com', { shouldValidate: true });
-      setValue('password', 'password123', { shouldValidate: true });
-      toast.info('Switched to Authority Login mode');
-    } else {
-      setValue('email', 'user@courier.com', { shouldValidate: true });
-      setValue('password', 'password123', { shouldValidate: true });
-      toast.info('Switched to Customer Login mode');
-    }
-  };
 
   const onSubmit = async (data) => {
     setSubmitting(true);
@@ -101,7 +87,7 @@ const Login = () => {
         {/* Center Hero Information Content */}
         <div className="relative z-10 my-auto text-white space-y-4 max-w-xl">
           <div className="inline-flex items-center gap-2 bg-[#0B2E8C]/90 text-white text-xs font-bold px-4 py-1.5 rounded-full backdrop-blur-md border border-blue-400/40 drop-shadow-md">
-            <ShieldCheck className="w-4 h-4 text-sky-300" /> Amazon & Flipkart Grade Logistics Engine
+            <ShieldCheck className="w-4 h-4 text-sky-300" /> Enterprise Logistics Control Engine
           </div>
 
           <h1 className="text-4xl lg:text-6xl font-black text-white tracking-tight leading-none drop-shadow-2xl">
@@ -134,15 +120,15 @@ const Login = () => {
       {/* RIGHT 42%: 100% Full Height Form Panel */}
       <div className="lg:w-[42%] h-full bg-white flex flex-col justify-between p-6 sm:p-12 lg:p-16 overflow-y-auto z-20">
         
-        <div className="max-w-md w-full mx-auto my-auto">
+        <div className="max-w-md w-full mx-auto my-auto space-y-6">
           
           {/* Form Header */}
-          <div className="text-center mb-8">
+          <div className="text-center">
             <div className="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#0B2E8C] bg-blue-50 px-3 py-1 rounded-full mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-[#0B2E8C]" /> Authorized Sign In
+              <Sparkles className="w-3.5 h-3.5 text-[#0B2E8C]" /> Authorized Operations Sign In
             </div>
-            <h2 className="text-3xl lg:text-5xl font-black text-slate-900 tracking-tight">
-              Welcome Back
+            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
+              Logistics Control Sign In
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">
               Log in to access courier dispatch control panel
@@ -150,11 +136,11 @@ const Login = () => {
           </div>
 
           {/* Login Form */}
-          <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             
             {/* Email Input */}
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700">Email Address</label>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700">Corporate Email Address</label>
               <div className="relative rounded-full shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                   <User className="h-4 w-4" />
@@ -168,7 +154,7 @@ const Login = () => {
                       message: 'Please enter a valid email address'
                     }
                   })}
-                  placeholder="awesome@user.com"
+                  placeholder="admin@courier.com"
                   className={`block w-full pl-11 pr-4 py-3.5 border rounded-full text-slate-800 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0B2E8C] transition-all ${
                     errors.email ? 'border-red-400 bg-red-50/20' : 'border-slate-300'
                   }`}
@@ -235,7 +221,7 @@ const Login = () => {
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                'Log In to Dashboard'
+                'Sign In to Control Center'
               )}
             </button>
 
@@ -244,34 +230,12 @@ const Login = () => {
               <p className="text-xs text-slate-500">
                 Don't have an account?{' '}
                 <Link to="/register" className="font-extrabold text-[#0B2E8C] hover:underline">
-                  Sign up now!
+                  Register new Account
                 </Link>
               </p>
             </div>
 
           </form>
-
-          {/* Quick Fill Mode Switcher Pills */}
-          <div className="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-            <button
-              type="button"
-              onClick={() => toggleMode(true)}
-              className={`px-4 py-2 rounded-full border transition-all cursor-pointer text-xs ${
-                authorityMode ? 'bg-[#0B2E8C] text-white border-[#0B2E8C] font-bold shadow-md' : 'border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              Authority Mode
-            </button>
-            <button
-              type="button"
-              onClick={() => toggleMode(false)}
-              className={`px-4 py-2 rounded-full border transition-all cursor-pointer text-xs ${
-                !authorityMode ? 'bg-[#0B2E8C] text-white border-[#0B2E8C] font-bold shadow-md' : 'border-slate-300 hover:bg-slate-50'
-              }`}
-            >
-              Customer Mode
-            </button>
-          </div>
 
         </div>
 
