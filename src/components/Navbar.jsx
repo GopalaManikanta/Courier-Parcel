@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, LayoutDashboard, Package, Users, Radio } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import NotificationCenter from './NotificationCenter';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -87,6 +88,9 @@ const Navbar = () => {
                 </Link>
               </div>
               
+              {/* Notification Center */}
+              <NotificationCenter />
+
               {/* User Role Tag */}
               <div className="flex items-center gap-2.5 bg-slate-100 px-3.5 py-1.5 rounded-full border border-slate-200 text-slate-800 text-xs font-semibold">
                 <div className="w-6 h-6 rounded-full bg-[#0B2E8C] text-white flex items-center justify-center text-xs font-bold">

@@ -16,13 +16,12 @@ import {
   ChevronRight,
   AlertCircle,
   X,
-  Sparkles,
   Zap,
   ArrowRight
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
 import { useCustomers } from '../context/CustomerContext';
-import StatusBadge, { getStatusConfig } from '../components/StatusBadge';
+import { getStatusConfig } from '../components/StatusBadge';
 
 const Shipments = () => {
   const { allCustomers } = useCustomers();
@@ -52,10 +51,9 @@ const Shipments = () => {
     generateTrackingNumber
   } = useShipments();
 
-  // Create Modal State
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createFormData, setCreateFormData] = useState({
-    trackingNumber: '',
+  // Helper for fresh form state
+  const createEmptyFormData = (trackingNo = '') => ({
+    trackingNumber: trackingNo,
     senderName: '',
     receiverName: '',
     pickupAddress: '',
@@ -66,6 +64,10 @@ const Shipments = () => {
     expectedDeliveryDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
     deliveryStatus: 'Pending'
   });
+
+  // Create Modal State
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createFormData, setCreateFormData] = useState(createEmptyFormData);
 
   // Edit Modal State
   const [showEditModal, setShowEditModal] = useState(false);

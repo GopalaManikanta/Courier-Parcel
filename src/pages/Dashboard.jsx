@@ -36,10 +36,9 @@ const Dashboard = () => {
   // Table Status Filter state
   const [activeTabFilter, setActiveTabFilter] = useState('All');
 
-  // Create Shipment Modal State on Dashboard
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createFormData, setCreateFormData] = useState({
-    trackingNumber: '',
+  // Helper for fresh form state
+  const createEmptyFormData = (trackingNo = '') => ({
+    trackingNumber: trackingNo,
     senderName: '',
     receiverName: '',
     pickupAddress: '',
@@ -51,20 +50,13 @@ const Dashboard = () => {
     deliveryStatus: 'Pending'
   });
 
+  // Create Shipment Modal State on Dashboard
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createFormData, setCreateFormData] = useState(createEmptyFormData);
+
   // Open Create Modal with fresh Tracking ID
   const handleOpenCreateModal = () => {
-    setCreateFormData({
-      trackingNumber: generateTrackingNumber(),
-      senderName: '',
-      receiverName: '',
-      pickupAddress: '',
-      deliveryAddress: '',
-      parcelWeight: '2.5 kg',
-      parcelType: 'Express Parcel',
-      shippingDate: new Date().toISOString().split('T')[0],
-      expectedDeliveryDate: new Date(Date.now() + 86400000 * 3).toISOString().split('T')[0],
-      deliveryStatus: 'Pending'
-    });
+    setCreateFormData(createEmptyFormData(generateTrackingNumber()));
     setShowCreateModal(true);
   };
 

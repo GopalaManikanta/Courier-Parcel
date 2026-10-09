@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
+import { useNotifications } from './NotificationContext';
 import {
   fetchShipmentsApi,
   createShipmentApi,
@@ -11,6 +12,7 @@ import {
 const ShipmentContext = createContext();
 
 export const ShipmentProvider = ({ children }) => {
+  const { addNotification } = useNotifications();
   const [shipments, setShipments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,6 +61,13 @@ export const ShipmentProvider = ({ children }) => {
       if (result.success) {
         setShipments((prev) => [result.data, ...prev]);
         toast.success(`Shipment ${result.data.trackingNumber} created successfully!`);
+        addNotification({
+          type: 'SHIPMENT_CREATED',
+          title: '🎉 New Shipment Booked',
+          message: `Shipment ${result.data.trackingNumber} registered for ${result.data.senderName || 'Customer'}.`,
+          trackingNumber: result.data.trackingNumber,
+          shipmentId: result.data.id
+        });
         return true;
       }
       return false;
@@ -80,6 +89,27 @@ export const ShipmentProvider = ({ children }) => {
           prev.map((item) => (item.id === id ? { ...item, ...updatedFields } : item))
         );
         toast.success(`Shipment ${updatedFields.trackingNumber || 'record'} updated successfully!`);
+        
+        if (updatedFields.deliveryStatus) {
+          let notifType = 'STATUS_UPDATED';
+          let title = `🚚 Status Updated to ${updatedFields.deliveryStatus}`;
+          if (updatedFields.deliveryStatus === 'Delivered') {
+            notifType = 'DELIVERY_COMPLETED';
+            title = '🟢 Delivery Completed';
+          } else if (updatedFields.deliveryStatus === 'Failed Delivery') {
+            notifType = 'FAILED_DELIVERY';
+            title = '⚠️ Failed Delivery Alert';
+          }
+
+          addNotification({
+            type: notifType,
+            title: title,
+            message: `Shipment ${updatedFields.trackingNumber || id} status changed to ${updatedFields.deliveryStatus}.`,
+            trackingNumber: updatedFields.trackingNumber || '',
+            shipmentId: id
+          });
+        }
+
         return true;
       }
       return false;

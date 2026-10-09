@@ -17,8 +17,7 @@ import {
   MapPin,
   Building2,
   Sparkles,
-  ShieldCheck,
-  Package
+  ShieldCheck
 } from 'lucide-react';
 import { useCustomers } from '../context/CustomerContext';
 
@@ -72,7 +71,6 @@ const Customers = () => {
   const {
     register: registerEdit,
     handleSubmit: handleEditSubmit,
-    reset: resetEditForm,
     setValue: setEditValue,
     formState: { errors: editErrors }
   } = useForm();

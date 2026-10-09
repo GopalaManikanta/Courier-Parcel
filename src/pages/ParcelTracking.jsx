@@ -16,7 +16,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { useShipments } from '../context/ShipmentContext';
-import StatusBadge from '../components/StatusBadge';
 import { toast } from 'react-toastify';
 
 const ParcelTracking = () => {

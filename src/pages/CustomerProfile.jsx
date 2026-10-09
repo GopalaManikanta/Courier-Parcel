@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   ArrowLeft,
-  User,
   Mail,
   Phone,
   MapPin,
@@ -15,9 +14,7 @@ import {
   Sparkles,
   PlusCircle,
   AlertTriangle,
-  ChevronRight,
-  Calendar,
-  Edit3
+  ChevronRight
 } from 'lucide-react';
 import { useCustomers } from '../context/CustomerContext';
 import { useShipments } from '../context/ShipmentContext';

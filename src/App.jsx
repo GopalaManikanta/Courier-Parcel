@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { ShipmentProvider } from './context/ShipmentContext';
 import { CustomerProvider } from './context/CustomerContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -36,8 +37,9 @@ const MainLayout = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
-      <ShipmentProvider>
-        <CustomerProvider>
+      <NotificationProvider>
+        <ShipmentProvider>
+          <CustomerProvider>
           <Router>
             <MainLayout>
               <Routes>
@@ -118,6 +120,7 @@ function App() {
         </Router>
         </CustomerProvider>
       </ShipmentProvider>
+      </NotificationProvider>
     </AuthProvider>
   );
 }
